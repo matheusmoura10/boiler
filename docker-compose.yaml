@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  node:
+    image: ms_node_skeleton_app
+    container_name: ms_node_skeleton_app
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: .docker/local/Dockerfile
+    environment:
+      - ./.env
+    volumes:
+      - .:/usr/app
+    ports:
+      - "${APP_PORT}:3000"
+    depends_on:
+      - redis
+      - mysql
+    networks:
+      - ms_network_skeleton
+  mysql:
+    image: 'mysql:8.0'
+    container_name: ms_node_skeleton_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - .docker/local/data/mysql:/var/lib/mysql
+    ports:
+      - "${DB_EXT_PORT}:3306"
+    networks:
+      - ms_network_skeleton
+  redis:
+    image: 'redis:latest'
+    container_name: ms_node_skeleton_redis
+    restart: unless-stopped
+    volumes:
+      - .docker/local/data/redis:/data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - ms_network_skeleton
+  rabbitmq:
+    build:
+      context: .
+      dockerfile: .docker/local/rabbitmq/Dockerfile
+    container_name: ms_node_skeleton_rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
+    volumes:
+      - .docker/local/data/rabbitmq:/var/lib/rabbitmq
+    ports:
+      - "${RABBITMQ_EXTERNAL_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_EXTERNAL_PORT}:15672"
+    networks:
+      - ms_network_skeleton
+networks:
+  ms_network_skeleton:
+    driver: bridge
