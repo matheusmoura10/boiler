@@ -1,6 +1,9 @@
-import {BaseRepositoryInterface} from "../../@shared/repository/base.repository";
-import {FazendaModel} from "../../infra/data/models/fazenda.model";
+import { BaseRepositoryInterface } from "../../@shared/repository/base.repository";
+import { FazendaModel } from "../../infra/data/models/fazenda.model";
 
-export default interface IFazendaRepository extends BaseRepositoryInterface<FazendaModel> {
-
+export default interface IFazendaRepository
+  extends BaseRepositoryInterface<FazendaModel> {
+  findByFazendaNumeroInstacao(
+    numeroInstalacao: string
+  ): Promise<FazendaModel | null>;
 }

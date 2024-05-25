@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   node:
     image: ms_node_skeleton_app
@@ -20,7 +19,7 @@ services:
     networks:
       - ms_network_skeleton
   mysql:
-    image: 'mysql:8.0'
+    image: "mysql:8.0"
     container_name: ms_node_skeleton_mysql
     restart: unless-stopped
     environment:
@@ -34,7 +33,7 @@ services:
     networks:
       - ms_network_skeleton
   redis:
-    image: 'redis:latest'
+    image: "redis:latest"
     container_name: ms_node_skeleton_redis
     restart: unless-stopped
     volumes:

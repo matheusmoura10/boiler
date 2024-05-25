@@ -17,6 +17,32 @@ import { FazendaModel } from "../data/models/fazenda.model";
 
 import { FazendaGeracaoModel } from "../data/models/fazenda.geracao.model";
 import FazendaGeracaoRepository from "../repository/fazenda.geracao.repository";
+import InsertGeracaoUseCase from "../../application/usecase/fazenda.geracao/insert.geracao.usecase";
+import ShowGeracaoUseCase from "../../application/usecase/fazenda.geracao/show.geracao.usecase";
+import UpdateGeracaoUseCase from "../../application/usecase/fazenda.geracao/update.geracao.usecase";
+import DestroyGeracaoUseCase from "../../application/usecase/fazenda.geracao/destroy.geracao.usecase";
+import ListGeracaoUseCase from "../../application/usecase/fazenda.geracao/list.geracao.usecase";
+import PayloadCotasController from "../../presenters/controllers/payload.cotas.controller";
+import ReaderUsecase from "../../application/usecase/reader/reader.usecase";
+import CotasModel from "../data/models/cotas.model";
+import CotasRepository from "../repository/cotas.repository";
+import UploadCotasUsecase from "../../application/usecase/payload.cotas/upload.cotas.usecase";
+import CalcularBalancoUseCase from "../../application/usecase/balanco/calcular.balanco.usecase";
+import ContasRepository from "../repository/contas.repository";
+import ContasModel from "../data/models/contas.model";
+import BalancoEnergiaRepository from "../repository/balanco.energia.repository";
+import BalancoEnergiaModel from "../data/models/balanco.energia.model";
+import ShowCotaUseCase from "../../application/usecase/cotas/show.cota.usecase";
+import ObterPorNumeroInstalacaoFazendaUseCase from "../../application/usecase/fazenda/obter.por.numeroinstalacao.fazenda.usecase";
+import ObterPorNumeroInstalacaoReferenciaGeracaoUseCase from "../../application/usecase/fazenda.geracao/obter.por.numeroinstalacaoreferencia.fazenda.usecase";
+import ObterContaEnergiaUseCase from "../../application/usecase/contasenergia/obter.contaenergia.usecase";
+import AnaliseBalancoUseCase from "../../application/usecase/balanco/analise.balanco.usecase";
+import BalancoAnaliseModel from "../data/models/balanco.analise.model";
+import BalancoAnaliseRepository from "../repository/balanco.analise.repository";
+import PersistirBalancoUseCase from "../../application/usecase/balanco/persistir.balanco.usecase";
+import BalancoModel from "../data/models/balanco.model";
+import BalancoRepository from "../repository/balanco.repository";
+import ConsolidarBalancoUseCase from "../../application/usecase/balanco/consolidar.balanco.usecase";
 
 const container = new Container();
 container
@@ -40,6 +66,7 @@ container
 container
   .bind<ListConcessionariaUsecase>("ListConcessionariaUsecase")
   .to(ListConcessionariaUsecase);
+/*-------------------*/
 
 container.bind<FazendaModel>("FazendaModel").to(FazendaModel);
 container.bind<FazendaRepository>("FazendaRepository").to(FazendaRepository);
@@ -54,6 +81,12 @@ container
   .to(DestroyFazendaUsecase);
 container.bind<ListFazendaUsecase>("ListFazendaUsecase").to(ListFazendaUsecase);
 container.bind<ShowFazendaUsecase>("ShowFazendaUsecase").to(ShowFazendaUsecase);
+container
+  .bind<ObterPorNumeroInstalacaoFazendaUseCase>(
+    "ObterPorNumeroInstalacaoFazendaUseCase"
+  )
+  .to(ObterPorNumeroInstalacaoFazendaUseCase);
+/*-------------------*/
 
 container
   .bind<FazendaGeracaoModel>("FazendaGeracaoModel")
@@ -61,5 +94,74 @@ container
 container
   .bind<FazendaGeracaoRepository>("FazendaGeracaoRepository")
   .to(FazendaGeracaoRepository);
+container
+  .bind<InsertGeracaoUseCase>("InsertGeracaoUseCase")
+  .to(InsertGeracaoUseCase);
+container.bind<ShowGeracaoUseCase>("ShowGeracaoUseCase").to(ShowGeracaoUseCase);
+container
+  .bind<UpdateGeracaoUseCase>("UpdateGeracaoUseCase")
+  .to(UpdateGeracaoUseCase);
+container
+  .bind<DestroyGeracaoUseCase>("DestroyGeracaoUseCase")
+  .to(DestroyGeracaoUseCase);
+container.bind<ListGeracaoUseCase>("ListGeracaoUseCase").to(ListGeracaoUseCase);
+
+container
+  .bind<ObterPorNumeroInstalacaoReferenciaGeracaoUseCase>(
+    "ObterPorNumeroInstalacaoReferenciaGeracaoUseCase"
+  )
+  .to(ObterPorNumeroInstalacaoReferenciaGeracaoUseCase);
+/*-------------------*/
+
+container.bind<ReaderUsecase>("ReaderUsecase").to(ReaderUsecase);
+/*-------------------*/
+
+container.bind<CotasModel>("CotasModel").to(CotasModel);
+container.bind<CotasRepository>("CotasRepository").to(CotasRepository);
+container.bind<ShowCotaUseCase>("ShowCotaUseCase").to(ShowCotaUseCase);
+
+/*-------------------*/
+
+container.bind<ContasModel>("ContasModel").to(ContasModel);
+container.bind<ContasRepository>("ContasRepository").to(ContasRepository);
+container
+  .bind<ObterContaEnergiaUseCase>("ObterContaEnergiaUseCase")
+  .to(ObterContaEnergiaUseCase);
+
+/*-------------------*/
+
+container
+  .bind<PayloadCotasController>("PayloadCotasController")
+  .to(PayloadCotasController);
+container.bind<UploadCotasUsecase>("UploadCotasUsecase").to(UploadCotasUsecase);
+
+/*-------------------*/
+container
+  .bind<BalancoEnergiaModel>("BalancoEnergiaModel")
+  .to(BalancoEnergiaModel);
+container
+  .bind<BalancoAnaliseModel>("BalancoAnaliseModel")
+  .to(BalancoAnaliseModel);
+container.bind<BalancoModel>("BalancoModel").to(BalancoModel);
+container
+  .bind<BalancoEnergiaRepository>("BalancoEnergiaRepository")
+  .to(BalancoEnergiaRepository);
+container.bind<BalancoRepository>("BalancoRepository").to(BalancoRepository);
+
+container
+  .bind<PersistirBalancoUseCase>("PersistirBalancoUseCase")
+  .to(PersistirBalancoUseCase);
+container
+  .bind<BalancoAnaliseRepository>("BalancoAnaliseRepository")
+  .to(BalancoAnaliseRepository);
+container
+  .bind<CalcularBalancoUseCase>("CalcularBalancoUseCase")
+  .to(CalcularBalancoUseCase);
+container
+  .bind<AnaliseBalancoUseCase>("AnaliseBalancoUseCase")
+  .to(AnaliseBalancoUseCase);
+container
+  .bind<ConsolidarBalancoUseCase>("ConsolidarBalancoUseCase")
+  .to(ConsolidarBalancoUseCase);
 
 export default container;

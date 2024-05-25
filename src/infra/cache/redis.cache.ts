@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 import CacheInterface from "../../@shared/cache/cache.interface";
 import { createClient } from "redis";
 import type { RedisClientType } from "redis";
+import { logger } from "../logger/logger";
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ export default class RedisCache implements CacheInterface {
 
     this.cliente.connect();
     this.cliente.on("error", (err) => {
-      console.log("Erro: ", err);
+      logger.error(err);
     });
   }
   async set(key: string, value: any, expire?: number): Promise<void> {

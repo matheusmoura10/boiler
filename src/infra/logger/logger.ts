@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+
+dotenv.config();
 enum LogLevel {
   INFO = "INFO",
   WARNING = "WARNING",
@@ -14,6 +17,10 @@ export interface LoggerInterface {
 }
 
 export default class Logger {
+  private readonly enableDebug = process.env.DEBUG === "true";
+
+  constructor() {}
+
   private readonly colors = {
     [LogLevel.INFO]: "\x1b[32m",
     [LogLevel.WARNING]: "\x1b[33m",
@@ -25,27 +32,57 @@ export default class Logger {
   private readonly resetColor = "\x1b[0m";
 
   log(message: string): void {
-    this.print(LogLevel.INFO, message);
+    if (this.enableDebug) {
+      this.print(LogLevel.INFO, message);
+    }
   }
 
   info(message: string): void {
-    this.print(LogLevel.INFO, message);
+    if (this.enableDebug) {
+      this.print(LogLevel.INFO, message);
+    }
   }
 
   error(message: string): void {
-    this.print(LogLevel.ERROR, message);
+    if (this.enableDebug) {
+      this.print(LogLevel.ERROR, message);
+    }
   }
 
   warning(message: string): void {
-    this.print(LogLevel.WARNING, message);
+    if (this.enableDebug) {
+      if (this.enableDebug) {
+        this.print(LogLevel.WARNING, message);
+      }
+    }
   }
 
   debug(message: string): void {
-    this.print(LogLevel.DEBUG, message);
+    if (this.enableDebug) {
+      this.print(LogLevel.DEBUG, message);
+    }
   }
 
   private print(level: LogLevel, message: string): void {
     console.log(`${this.colors[level]}[${level}] ${message}${this.resetColor}`);
+  }
+
+  logTable({
+    title,
+    headers,
+    rows,
+  }: {
+    title: string;
+    headers: string[];
+    rows: any[];
+  }): void {
+    if (this.enableDebug) {
+      console.log("\x1b[33m%s\x1b[0m", "-".repeat(10) + title + "-".repeat(10));
+      const combined = headers.map(function (v, k, a) {
+        return { chave: v, valor: rows[k] };
+      });
+      console.table(combined);
+    }
   }
 }
 

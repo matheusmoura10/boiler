@@ -9,6 +9,7 @@ import {
   FazendaProps,
   FazendaPropsId,
 } from "../../domain/fazenda/fazenda.factory";
+import ShowConcessionariaUsecase from "../../application/usecase/concessionarias/show.concessionaria.usecase";
 
 @injectable()
 export default class FazendaController {
@@ -22,7 +23,9 @@ export default class FazendaController {
     @inject("DestroyFazendaUsecase")
     private readonly destroyFazendaUsecase: DestroyFazendaUsecase,
     @inject("ShowFazendaUsecase")
-    private readonly showFazendaUsecase: ShowFazendaUsecase
+    private readonly showFazendaUsecase: ShowFazendaUsecase,
+    @inject("ShowConcessionariaUsecase")
+    private readonly showConcessionariaUsecase: ShowConcessionariaUsecase
   ) {}
 
   async listar(req: Request, res: Response) {
@@ -52,25 +55,39 @@ export default class FazendaController {
 
   async salvar(req: Request, res: Response) {
     const data = req.body as FazendaProps;
+    const concessionariaId = req.params.concessionaria as unknown as string;
 
-    const result = await this.insertFazendaUsecase.execute({
+    const concessionaria = await this.showConcessionariaUsecase.execute(
+      concessionariaId
+    );
+
+    const resultado = await this.insertFazendaUsecase.execute({
+      concessionaria,
       ...data,
     });
 
-    res.status(201).json(result);
+    res.status(201).json(resultado);
   }
 
   async atualizar(req: Request, res: Response) {
     const data = req.body as FazendaPropsId;
-    const id = req.params.id as unknown as string;
-    data.id = id;
+    const { id, concessionaria } = req.params;
 
-    const result = await this.updateFazendaUsecase.execute(data);
+    const concessionariaResult = await this.showConcessionariaUsecase.execute(
+      concessionaria
+    );
+
+    const result = await this.updateFazendaUsecase.execute({
+      id,
+      concessionaria: concessionariaResult,
+      ...data,
+    });
+
     res.status(200).json(result);
   }
 
   async excluir(req: Request, res: Response) {
-    const id = req.params.id as unknown as string;
+    const { id } = req.params;
 
     const result = await this.destroyFazendaUsecase.execute(id);
     res.status(200).json(result);

@@ -1,5 +1,6 @@
 import { Job, Worker, WorkerOptions, QueueEvents } from "bullmq";
 import { redisOptionsConnect } from "../config/redis/config";
+import { logger } from "../logger/logger";
 
 export class CriarWorker<T = any> {
   private nome: string;
@@ -21,17 +22,17 @@ export class CriarWorker<T = any> {
     });
 
     worker.on("completed", (job) => {
-      console.log(
-        `Job id: ${job.id} finalizado com sucesso! na fila ${this.nome} 🤌`
+      logger.info(
+        `Job id: ${job.id} finalizado com sucesso! na fila ${this.nome}`
       );
     });
 
     worker.on("failed", (job) => {
-      console.log(`Job id: ${job.id} falhou na queue: ${this.nome} ⛔`);
+      logger.error(`Job id: ${job.id} falhou na queue: ${this.nome} ⛔`);
     });
 
     worker.on("ready", () => {
-      console.log(`Worker conectado - ${this.nome} 🚀`);
+      logger.info(`Worker conectado - ${this.nome} 🚀`);
     });
   }
 }

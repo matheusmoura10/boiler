@@ -4,11 +4,7 @@ import { logger } from "../logger/logger";
 export default class RequestInterceptor {
   intercept(req: Request, res: Response, next: NextFunction) {
     const ip = this.getIP(req);
-    const method = req.method;
-    const url = req.originalUrl;
-    const body = req.body;
-    const query = req.query;
-    const params = req.params;
+    const { method, originalUrl: url, body, query, params } = req;
     const dataHora = new Date();
 
     logger.info(
@@ -16,23 +12,18 @@ export default class RequestInterceptor {
         body
       )} - Query: ${JSON.stringify(query)} - Params: ${JSON.stringify(
         params
-      )} as  ${dataHora.toLocaleDateString(
+      )} as ${dataHora.toLocaleDateString(
         "pt-BR"
-      )} ${dataHora.toLocaleTimeString("pt-BR")} `
+      )} ${dataHora.toLocaleTimeString("pt-BR")}`
     );
     next();
   }
 
-  private getIP(request: any): string {
-    let ip: string;
-    const ipAddr = request.headers["x-forwarded-for"];
-    if (ipAddr) {
-      const list = ipAddr.split(",");
-      ip = list[list.length - 1];
-    } else {
-      ip = request.connection.remoteAddress;
-    }
-    return ip.replace("::ffff:", "");
+  private getIP(request: Request): string {
+    const ipAddr =
+      request.headers["x-forwarded-for"]?.toString().split(",").pop() ||
+      request.connection.remoteAddress;
+    return ipAddr.replace("::ffff:", "");
   }
 }
 
